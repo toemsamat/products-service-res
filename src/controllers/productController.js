@@ -6,7 +6,8 @@ export const createCategory = async (req, res) => {
   try {
     const { name, description } = req.body;
     const exist = await Category.findOne({ name });
-    if (exist) return res.status(400).json({ message: "Category already exists" });
+    if (exist)
+      return res.status(400).json({ message: "Category already exists" });
 
     const category = await Category.create({ name, description });
     res.status(201).json({ message: "Category created", category });
@@ -26,14 +27,53 @@ export const getCategories = async (req, res) => {
 };
 
 // 🟢 Create Product
+// export const createProduct = async (req, res) => {
+//   try {
+//     const { name, description, price, image, category } = req.body;
+//     const existCat = await Category.findById(category);
+//     if (!existCat) return res.status(404).json({ message: "Category not found" });
+
+//     const product = await Product.create({ name, description, price, image, category });
+//     res.status(201).json({ message: "Product created", product });
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// };
+
+// 🟢 Create Product
 export const createProduct = async (req, res) => {
   try {
-    const { name, description, price, image, category } = req.body;
-    const existCat = await Category.findById(category);
-    if (!existCat) return res.status(404).json({ message: "Category not found" });
+    const { name, description, price, image, category, available } = req.body;
 
-    const product = await Product.create({ name, description, price, image, category });
-    res.status(201).json({ message: "Product created", product });
+    // ពិនិត្យថា category មាននៅក្នុង DB
+    const existingCategory = await Category.findById(category);
+    if (!existingCategory) {
+      return res.status(400).json({ message: "Invalid category ID" });
+    }
+
+    // បង្កើត product ថ្មី
+    const newProduct = new Product({
+      name,
+      description,
+      price,
+      image,
+      category,
+      available,
+    });
+
+    // save product
+    const savedProduct = await newProduct.save();
+
+    // ✅ populate category before sending response
+    const populatedProduct = await Product.findById(savedProduct._id).populate(
+      "category",
+      "name"
+    );
+
+    res.status(201).json({
+      message: "Product created",
+      product: populatedProduct,
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -52,7 +92,10 @@ export const getProducts = async (req, res) => {
 // 🟢 Get Single Product
 export const getProductById = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id).populate("category", "name");
+    const product = await Product.findById(req.params.id).populate(
+      "category",
+      "name"
+    );
     if (!product) return res.status(404).json({ message: "Product not found" });
     res.json(product);
   } catch (err) {
@@ -63,7 +106,9 @@ export const getProductById = async (req, res) => {
 // 🟢 Update Product
 export const updateProduct = async (req, res) => {
   try {
-    const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
     if (!product) return res.status(404).json({ message: "Product not found" });
     res.json({ message: "Product updated", product });
   } catch (err) {
