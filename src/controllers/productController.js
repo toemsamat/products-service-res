@@ -1,7 +1,7 @@
 import Product from "../models/Product.js";
 import Category from "../models/Category.js";
 
-// 🟢 Create Category
+// ------------------------- Create Category -------------------------
 export const createCategory = async (req, res) => {
   try {
     const { name, description } = req.body;
@@ -16,7 +16,7 @@ export const createCategory = async (req, res) => {
   }
 };
 
-// 🟢 Get All Categories
+// ------------------------- Get All Categories -------------------------
 export const getCategories = async (req, res) => {
   try {
     const categories = await Category.find();
@@ -26,32 +26,18 @@ export const getCategories = async (req, res) => {
   }
 };
 
-// 🟢 Create Product
-// export const createProduct = async (req, res) => {
-//   try {
-//     const { name, description, price, image, category } = req.body;
-//     const existCat = await Category.findById(category);
-//     if (!existCat) return res.status(404).json({ message: "Category not found" });
-
-//     const product = await Product.create({ name, description, price, image, category });
-//     res.status(201).json({ message: "Product created", product });
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// };
-
-// 🟢 Create Product
+// ------------------------- Create Product -------------------------
 export const createProduct = async (req, res) => {
   try {
     const { name, description, price, image, category, available } = req.body;
 
-    // ពិនិត្យថា category មាននៅក្នុង DB
+    // check category in DB
     const existingCategory = await Category.findById(category);
     if (!existingCategory) {
       return res.status(400).json({ message: "Invalid category ID" });
     }
 
-    // បង្កើត product ថ្មី
+    // create new product 
     const newProduct = new Product({
       name,
       description,
@@ -79,7 +65,7 @@ export const createProduct = async (req, res) => {
   }
 };
 
-// 🟢 Get All Products
+// ------------------------- Get All Products -------------------------
 export const getProducts = async (req, res) => {
   try {
     const products = await Product.find().populate("category", "name");
@@ -89,7 +75,7 @@ export const getProducts = async (req, res) => {
   }
 };
 
-// 🟢 Get Single Product
+// ------------------------- Get Single Product -------------------------
 export const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id).populate(
@@ -103,7 +89,7 @@ export const getProductById = async (req, res) => {
   }
 };
 
-// 🟢 Update Product
+// ------------------------- Update Product -------------------------
 export const updateProduct = async (req, res) => {
   try {
     const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
@@ -116,7 +102,7 @@ export const updateProduct = async (req, res) => {
   }
 };
 
-// 🟢 Delete Product
+// ------------------------- Delete Product -------------------------
 export const deleteProduct = async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
