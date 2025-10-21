@@ -8,13 +8,10 @@ import {
   updateProduct,
   deleteProduct
 } from "../controllers/productController.js";
-
 const router = express.Router();
-
 // Category
 router.post("/category", createCategory);
 router.get("/category", getCategories);
-
 // Product
 router.post("/", createProduct);
 router.get("/", getProducts);

@@ -1,7 +1,8 @@
 import Product from "../models/Product.js";
 import Category from "../models/Category.js";
-
-// ------------------------- Create Category -------------------------
+// -------------------------------------------------------------------
+// ------------------------- CREATE CATEGORY -------------------------
+// -------------------------------------------------------------------
 export const createCategory = async (req, res) => {
   try {
     const { name, description } = req.body;
@@ -15,8 +16,9 @@ export const createCategory = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
-// ------------------------- Get All Categories -------------------------
+// -------------------------------------------------------------------
+// ------------------------- GET ALL CATEGORIES ----------------------
+// -------------------------------------------------------------------
 export const getCategories = async (req, res) => {
   try {
     const categories = await Category.find();
@@ -25,8 +27,9 @@ export const getCategories = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
-// ------------------------- Create Product -------------------------
+// ------------------------------------------------------------------
+// ------------------------- CREATE PRODUCT -------------------------
+// ------------------------------------------------------------------
 export const createProduct = async (req, res) => {
   try {
     const { name, description, price, image, category, available } = req.body;
@@ -50,7 +53,7 @@ export const createProduct = async (req, res) => {
     // save product
     const savedProduct = await newProduct.save();
 
-    // ✅ populate category before sending response
+    //  populate category before sending response
     const populatedProduct = await Product.findById(savedProduct._id).populate(
       "category",
       "name"
@@ -64,8 +67,9 @@ export const createProduct = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
-// ------------------------- Get All Products -------------------------
+// --------------------------------------------------------------------
+// ------------------------- GET ALL PRODUCTS -------------------------
+// --------------------------------------------------------------------
 export const getProducts = async (req, res) => {
   try {
     const products = await Product.find().populate("category", "name");
@@ -74,8 +78,9 @@ export const getProducts = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
-// ------------------------- Get Single Product -------------------------
+// ----------------------------------------------------------------------
+// ------------------------- GET SINGLE PRODUCT -------------------------
+// ----------------------------------------------------------------------
 export const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id).populate(
@@ -88,8 +93,9 @@ export const getProductById = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
-// ------------------------- Update Product -------------------------
+// ------------------------------------------------------------------
+// ------------------------- UPDATE PRODUCT -------------------------
+// ------------------------------------------------------------------
 export const updateProduct = async (req, res) => {
   try {
     const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
@@ -101,8 +107,9 @@ export const updateProduct = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
-// ------------------------- Delete Product -------------------------
+// ------------------------------------------------------------------
+// ------------------------- DELETE PRODUCT -------------------------
+// ------------------------------------------------------------------
 export const deleteProduct = async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
